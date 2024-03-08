@@ -1,5 +1,5 @@
 # Dylan_993
-
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -24,6 +24,11 @@
       font-size: 20px;
     }
 
+    #level {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
     #game-over {
       display: none;
       margin-top: 20px;
@@ -31,12 +36,19 @@
       color: red;
       font-weight: bold;
     }
+
+    #next-piece-canvas {
+      border: 1px solid #000;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
   <div id="score">Score: 0</div>
+  <div id="level">Level: 1</div>
   <div id="game-over">Game Over!</div>
+  <canvas id="next-piece-canvas" width="100" height="100"></canvas>
 
   <script>
     const canvas = document.getElementById('tetrisCanvas');
@@ -46,44 +58,143 @@
     const columns = 10;
     let board = Array.from({ length: rows }, () => Array(columns).fill(0));
     let currentPiece = generatePiece();
+    let nextPiece = generatePiece();
     let score = 0;
+    let level = 1;
     let gameOver = false;
     let gameSpeed = 500; // Initial game speed in milliseconds
     let lastMoveDown = Date.now();
     let isPaused = false;
 
-    function drawSquare(x, y, color) {
-      ctx.fillStyle = color;
-      ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-      ctx.strokeStyle = "#000";
-      ctx.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
+    const nextPieceCanvas = document.getElementById('next-piece-canvas');
+    const nextPieceCtx = nextPieceCanvas.getContext('2d');
+
+    // Touch events
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    canvas.addEventListener('touchstart', handleTouchStart, false);
+    canvas.addEventListener('touchmove', handleTouchMove, false);
+    canvas.addEventListener('touchend', handleTouchEnd, false);
+
+    function handleTouchStart(event) {
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }
+
+    function handleTouchMove(event) {
+      event.preventDefault();
+      // Calculate the distance moved
+      const touchX = event.touches[0].clientX;
+      const touchY = event.touches[0].clientY;
+      const deltaX = touchX - touchStartX;
+      const deltaY = touchY - touchStartY;
+
+      // Determine the direction of the movement
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal movement
+        if (deltaX > 0) {
+          moveRight();
+        } else {
+          moveLeft();
+        }
+      } else {
+        // Vertical movement
+        if (deltaY > 0) {
+          moveDown();
+        } else {
+          rotate();
+        }
+      }
+    }
+
+    function handleTouchEnd(event) {
+      // Reset touch coordinates
+      touchStartX = 0;
+      touchStartY = 0;
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (!gameOver && !isPaused) {
+        switch (event.key) {
+          case 'ArrowLeft':
+          case 'a':
+            moveLeft();
+            break;
+          case 'ArrowRight':
+          case 'd':
+            moveRight();
+            break;
+          case 'ArrowDown':
+          case 's':
+            moveDown();
+            break;
+          case 'ArrowUp':
+          case 'w':
+            rotate();
+            break;
+          case ' ':
+            moveDrop();
+            break;
+          case 'x':
+            // "X" key for toggling pause/resume
+            isPaused = !isPaused;
+            break;
+          case 'c':
+            // "C" key for changing the position of the piece
+            moveUp();
+            break;
+          case 'z':
+            // "Z" key for clockwise rotation
+            rotateClockwise();
+            break;
+          default:
+            break;
+        }
+      }
+    });
+
+    function drawSquare(x, y, color, context) {
+      context.fillStyle = color;
+      context.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+      context.strokeStyle = "#000";
+      context.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
     }
 
     function drawBoard() {
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < columns; col++) {
           if (board[row][col] !== 0) {
-            drawSquare(col, row, board[row][col]);
+            drawSquare(col, row, board[row][col], ctx);
           }
         }
       }
     }
 
-    function drawPiece() {
-      currentPiece.shape.forEach((row, i) => {
+    function drawPiece(piece, context) {
+      piece.shape.forEach((row, i) => {
         row.forEach((cell, j) => {
           if (cell !== 0) {
-            drawSquare(currentPiece.x + j, currentPiece.y + i, currentPiece.color);
+            drawSquare(piece.x + j, piece.y + i, piece.color, context);
           }
         });
       });
     }
 
+    function drawNextPiece() {
+      nextPieceCtx.clearRect(0, 0, nextPieceCanvas.width, nextPieceCanvas.height);
+      const offsetX = (nextPieceCanvas.width - blockSize * nextPiece.shape[0].length) / 2;
+      const offsetY = (nextPieceCanvas.height - blockSize * nextPiece.shape.length) / 2;
+
+      drawPiece(nextPiece, nextPieceCtx);
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBoard();
-      drawPiece();
+      drawPiece(currentPiece, ctx);
       document.getElementById('score').textContent = `Score: ${score}`;
+      document.getElementById('level').textContent = `Level: ${level}`;
 
       if (gameOver) {
         document.getElementById('game-over').style.display = 'block';
@@ -116,7 +227,8 @@
       } else if (!gameOver) {
         mergePiece();
         clearLines();
-        currentPiece = generatePiece();
+        currentPiece = nextPiece;
+        nextPiece = generatePiece();
         if (!isValidMove(0, 0)) {
           gameOver = true;
         }
@@ -208,6 +320,7 @@
       }
       if (linesCleared > 0) {
         score += linesCleared * 100;
+        level = Math.floor(score / 1000) + 1; // Update level
         // Increase game speed after clearing lines
         gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
       }
@@ -226,29 +339,6 @@
       draw();
       requestAnimationFrame(gameLoop);
     }
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') {
-        moveLeft();
-      } else if (event.key === 'ArrowRight') {
-        moveRight();
-      } else if (event.key === 'ArrowDown') {
-        moveDown();
-      } else if (event.key === 'ArrowUp') {
-        rotate();
-      } else if (event.key === 'x') {
-        // "X" key for toggling pause/resume
-        isPaused = !isPaused;
-      } else if (event.key === 'c') {
-        // "C" key for changing the position of the piece
-        moveUp();
-      } else if (event.key === ' ') {
-        moveDrop();
-      } else if (event.key === 'z') {
-        // "Z" key for clockwise rotation
-        rotateClockwise();
-      }
-    });
 
     gameLoop();
   </script>
