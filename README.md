@@ -1,5 +1,5 @@
 # Dylan_993
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -154,6 +154,13 @@
       }
     });
 
+    // Добавляем обработчик события для нажатия на фигуру
+    const rotateCurrentPiece = () => {
+      rotate();
+    };
+
+    canvas.addEventListener('click', rotateCurrentPiece);
+
     function drawSquare(x, y, color, context) {
       context.fillStyle = color;
       context.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
@@ -200,6 +207,8 @@
         document.getElementById('game-over').style.display = 'block';
       }
     }
+
+    
 
     function generatePiece() {
       const pieces = [
@@ -343,3 +352,7 @@
     gameLoop();
   </script>
 
+ <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
+  </script>
+</body>
+</html>
