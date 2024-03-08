@@ -1,5 +1,5 @@
 # Dylan_993
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -354,5 +354,3 @@
 
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
   </script>
-</body>
-</html>
