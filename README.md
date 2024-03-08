@@ -1,5 +1,5 @@
 # Dylan_993
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -252,5 +252,4 @@
 
     gameLoop();
   </script>
-</body>
-</html>
+
