@@ -1,5 +1,4 @@
-# Dylan_993
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -50,6 +49,17 @@
   <div id="game-over">Game Over!</div>
   <canvas id="next-piece-canvas" width="100" height="100"></canvas>
 
+  <button onclick="moveLeft()">Left</button>
+  <button onclick="moveRight()">Right</button>
+  <button onclick="moveDown()">Down</button>
+  <button onclick="rotate()">Rotate</button>
+  <button onclick="moveDrop()">Drop</button>
+  <button onclick="togglePause()">Pause</button>
+  <button onclick="restartGame()">Restart</button>
+
+  <audio id="rotateSound" src="rotate.mp3"></audio>
+  <audio id="clearLineSound" src="clearLine.mp3"></audio>
+
   <script>
     const canvas = document.getElementById('tetrisCanvas');
     const ctx = canvas.getContext('2d');
@@ -62,104 +72,12 @@
     let score = 0;
     let level = 1;
     let gameOver = false;
-    let gameSpeed = 500; // Initial game speed in milliseconds
+    let gameSpeed = 500;
     let lastMoveDown = Date.now();
     let isPaused = false;
 
     const nextPieceCanvas = document.getElementById('next-piece-canvas');
     const nextPieceCtx = nextPieceCanvas.getContext('2d');
-
-    // Touch events
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    canvas.addEventListener('touchstart', handleTouchStart, false);
-    canvas.addEventListener('touchmove', handleTouchMove, false);
-    canvas.addEventListener('touchend', handleTouchEnd, false);
-
-    function handleTouchStart(event) {
-      touchStartX = event.touches[0].clientX;
-      touchStartY = event.touches[0].clientY;
-    }
-
-    function handleTouchMove(event) {
-      event.preventDefault();
-      // Calculate the distance moved
-      const touchX = event.touches[0].clientX;
-      const touchY = event.touches[0].clientY;
-      const deltaX = touchX - touchStartX;
-      const deltaY = touchY - touchStartY;
-
-      // Determine the direction of the movement
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal movement
-        if (deltaX > 0) {
-          moveRight();
-        } else {
-          moveLeft();
-        }
-      } else {
-        // Vertical movement
-        if (deltaY > 0) {
-          moveDown();
-        } else {
-          rotate();
-        }
-      }
-    }
-
-    function handleTouchEnd(event) {
-      // Reset touch coordinates
-      touchStartX = 0;
-      touchStartY = 0;
-    }
-
-    document.addEventListener('keydown', (event) => {
-      if (!gameOver && !isPaused) {
-        switch (event.key) {
-          case 'ArrowLeft':
-          case 'a':
-            moveLeft();
-            break;
-          case 'ArrowRight':
-          case 'd':
-            moveRight();
-            break;
-          case 'ArrowDown':
-          case 's':
-            moveDown();
-            break;
-          case 'ArrowUp':
-          case 'w':
-            rotate();
-            break;
-          case ' ':
-            moveDrop();
-            break;
-          case 'x':
-            // "X" key for toggling pause/resume
-            isPaused = !isPaused;
-            break;
-          case 'c':
-            // "C" key for changing the position of the piece
-            moveUp();
-            break;
-          case 'z':
-            // "Z" key for clockwise rotation
-            rotateClockwise();
-            break;
-          default:
-            break;
-        }
-      }
-    });
-
-    // Добавляем обработчик события для нажатия на фигуру
-    const rotateCurrentPiece = () => {
-      rotate();
-    };
-
-    canvas.addEventListener('click', rotateCurrentPiece);
 
     function drawSquare(x, y, color, context) {
       context.fillStyle = color;
@@ -196,10 +114,10 @@
       drawPiece(nextPiece, nextPieceCtx);
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function drawGame() {
       drawBoard();
       drawPiece(currentPiece, ctx);
+      drawNextPiece();
       document.getElementById('score').textContent = `Score: ${score}`;
       document.getElementById('level').textContent = `Level: ${level}`;
 
@@ -207,8 +125,6 @@
         document.getElementById('game-over').style.display = 'block';
       }
     }
-
-    
 
     function generatePiece() {
       const pieces = [
@@ -266,6 +182,7 @@
 
       if (!gameOver && isValidMove(0, 0, rotatedPiece)) {
         currentPiece.shape = rotatedPiece.shape;
+        playRotateSound();
       }
     }
 
@@ -279,6 +196,7 @@
 
       if (!gameOver && isValidMove(0, 0, rotatedPiece)) {
         currentPiece.shape = rotatedPiece.shape;
+        playRotateSound();
       }
     }
 
@@ -329,9 +247,9 @@
       }
       if (linesCleared > 0) {
         score += linesCleared * 100;
-        level = Math.floor(score / 1000) + 1; // Update level
-        // Increase game speed after clearing lines
+        level = Math.floor(score / 1000) + 1;
         gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
+        playClearLineSound();
       }
     }
 
@@ -343,14 +261,43 @@
       }
     }
 
-    function gameLoop() {
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
+    function playRotateSound() {
+      const rotateSound = document.getElementById('rotateSound');
+      rotateSound.play();
     }
 
-    gameLoop();
+    function playClearLineSound() {
+      const clearLineSound = document.getElementById('clearLineSound');
+      clearLineSound.play();
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+    }
+
+    function handleTouchStart(event) {
+      // ...
+    }
+
+    function handleTouchMove(event) {
+      // ...
+    }
+
+    function handleTouchEnd(event) {
+      // ...
+    }
+
+    document.addEventListener('keydown', (event) => {
+      // ...
+    });
+
+    canvas.addEventListener('click', rotateCurrentPiece);
+
+    function rotateCurrentPiece() {
+      rotate();
+    }
   </script>
 
- <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
-  </script>
+  <p>&copy; 2024 Разработчик Dylan933 Все права защищены. | <span id="companyLink"></span></p>
+</body>
+</html>
