@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -23,11 +23,6 @@
       font-size: 20px;
     }
 
-    #level {
-      margin-top: 10px;
-      font-size: 18px;
-    }
-
     #game-over {
       display: none;
       margin-top: 20px;
@@ -35,30 +30,12 @@
       color: red;
       font-weight: bold;
     }
-
-    #next-piece-canvas {
-      border: 1px solid #000;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
   <div id="score">Score: 0</div>
-  <div id="level">Level: 1</div>
   <div id="game-over">Game Over!</div>
-  <canvas id="next-piece-canvas" width="100" height="100"></canvas>
-
-  <button onclick="moveLeft()">Left</button>
-  <button onclick="moveRight()">Right</button>
-  <button onclick="moveDown()">Down</button>
-  <button onclick="rotate()">Rotate</button>
-  <button onclick="moveDrop()">Drop</button>
-  <button onclick="togglePause()">Pause</button>
-  <button onclick="restartGame()">Restart</button>
-
-  <audio id="rotateSound" src="rotate.mp3"></audio>
-  <audio id="clearLineSound" src="clearLine.mp3"></audio>
 
   <script>
     const canvas = document.getElementById('tetrisCanvas');
@@ -68,58 +45,44 @@
     const columns = 10;
     let board = Array.from({ length: rows }, () => Array(columns).fill(0));
     let currentPiece = generatePiece();
-    let nextPiece = generatePiece();
     let score = 0;
-    let level = 1;
     let gameOver = false;
-    let gameSpeed = 500;
+    let gameSpeed = 500; // Initial game speed in milliseconds
     let lastMoveDown = Date.now();
     let isPaused = false;
 
-    const nextPieceCanvas = document.getElementById('next-piece-canvas');
-    const nextPieceCtx = nextPieceCanvas.getContext('2d');
-
-    function drawSquare(x, y, color, context) {
-      context.fillStyle = color;
-      context.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-      context.strokeStyle = "#000";
-      context.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
+    function drawSquare(x, y, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+      ctx.strokeStyle = "#000";
+      ctx.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
     }
 
     function drawBoard() {
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < columns; col++) {
           if (board[row][col] !== 0) {
-            drawSquare(col, row, board[row][col], ctx);
+            drawSquare(col, row, board[row][col]);
           }
         }
       }
     }
 
-    function drawPiece(piece, context) {
-      piece.shape.forEach((row, i) => {
+    function drawPiece() {
+      currentPiece.shape.forEach((row, i) => {
         row.forEach((cell, j) => {
           if (cell !== 0) {
-            drawSquare(piece.x + j, piece.y + i, piece.color, context);
+            drawSquare(currentPiece.x + j, currentPiece.y + i, currentPiece.color);
           }
         });
       });
     }
 
-    function drawNextPiece() {
-      nextPieceCtx.clearRect(0, 0, nextPieceCanvas.width, nextPieceCanvas.height);
-      const offsetX = (nextPieceCanvas.width - blockSize * nextPiece.shape[0].length) / 2;
-      const offsetY = (nextPieceCanvas.height - blockSize * nextPiece.shape.length) / 2;
-
-      drawPiece(nextPiece, nextPieceCtx);
-    }
-
-    function drawGame() {
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBoard();
-      drawPiece(currentPiece, ctx);
-      drawNextPiece();
+      drawPiece();
       document.getElementById('score').textContent = `Score: ${score}`;
-      document.getElementById('level').textContent = `Level: ${level}`;
 
       if (gameOver) {
         document.getElementById('game-over').style.display = 'block';
@@ -152,8 +115,7 @@
       } else if (!gameOver) {
         mergePiece();
         clearLines();
-        currentPiece = nextPiece;
-        nextPiece = generatePiece();
+        currentPiece = generatePiece();
         if (!isValidMove(0, 0)) {
           gameOver = true;
         }
@@ -182,7 +144,6 @@
 
       if (!gameOver && isValidMove(0, 0, rotatedPiece)) {
         currentPiece.shape = rotatedPiece.shape;
-        playRotateSound();
       }
     }
 
@@ -196,7 +157,6 @@
 
       if (!gameOver && isValidMove(0, 0, rotatedPiece)) {
         currentPiece.shape = rotatedPiece.shape;
-        playRotateSound();
       }
     }
 
@@ -247,9 +207,8 @@
       }
       if (linesCleared > 0) {
         score += linesCleared * 100;
-        level = Math.floor(score / 1000) + 1;
+        // Increase game speed after clearing lines
         gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
-        playClearLineSound();
       }
     }
 
@@ -261,43 +220,35 @@
       }
     }
 
-    function playRotateSound() {
-      const rotateSound = document.getElementById('rotateSound');
-      rotateSound.play();
-    }
-
-    function playClearLineSound() {
-      const clearLineSound = document.getElementById('clearLineSound');
-      clearLineSound.play();
-    }
-
-    function togglePause() {
-      isPaused = !isPaused;
-    }
-
-    function handleTouchStart(event) {
-      // ...
-    }
-
-    function handleTouchMove(event) {
-      // ...
-    }
-
-    function handleTouchEnd(event) {
-      // ...
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
     }
 
     document.addEventListener('keydown', (event) => {
-      // ...
+      if (event.key === 'ArrowLeft') {
+        moveLeft();
+      } else if (event.key === 'ArrowRight') {
+        moveRight();
+      } else if (event.key === 'ArrowDown') {
+        moveDown();
+      } else if (event.key === 'ArrowUp') {
+        rotate();
+      } else if (event.key === 'x') {
+        // "X" key for toggling pause/resume
+        isPaused = !isPaused;
+      } else if (event.key === 'c') {
+        // "C" key for changing the position of the piece
+        moveUp();
+      } else if (event.key === ' ') {
+        moveDrop();
+      } else if (event.key === 'z') {
+        // "Z" key for clockwise rotation
+        rotateClockwise();
+      }
     });
 
-    canvas.addEventListener('click', rotateCurrentPiece);
-
-    function rotateCurrentPiece() {
-      rotate();
-    }
+    gameLoop();
   </script>
-
-  <p>&copy; 2024 Разработчик Dylan933 Все права защищены. | <span id="companyLink"></span></p>
-</body>
-</html>
+ <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
