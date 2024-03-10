@@ -3,7 +3,7 @@
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
   <div id="score">Score: 0</div>
   <div id="level">Level: 1</div>
-  <div id="game-over">Game Over!</div>
+
   <canvas id="next-piece-canvas" width="100" height="100"></canvas>
 
   <script>
