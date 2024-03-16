@@ -35,7 +35,12 @@
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
   <div id="score">Score: 0</div>
   <div id="game-over">Game Over!</div>
-
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
+<lord-icon
+    src="https://cdn.lordicon.com/bzqvamqv.json"
+    trigger="hover"
+    style="width:100px;height:100px">
+</lord-icon>
   <script>
     const canvas = document.getElementById('tetrisCanvas');
     const ctx = canvas.getContext('2d');
