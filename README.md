@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -22,6 +23,14 @@
       font-size: 20px;
     }
 
+    #game-controls {
+      margin-bottom: 20px;
+    }
+
+    #game-controls button {
+      margin-right: 10px;
+    }
+
     #game-over {
       display: none;
       margin-top: 20px;
@@ -32,28 +41,70 @@
   </style>
 </head>
 <body>
+  <div id="game-controls">
+    <button id="start-pause-btn">Start / Pause</button>
+    <button id="restart-btn">Restart</button>
+    <button id="sound-toggle-btn">Toggle Sound</button>
+  </div>
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
   <div id="score">Score: 0</div>
   <div id="game-over">Game Over!</div>
-<script src="https://cdn.lordicon.com/lordicon.js"></script>
-<lord-icon
+
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <lord-icon
     src="https://cdn.lordicon.com/bzqvamqv.json"
     trigger="hover"
     style="width:100px;height:100px">
-</lord-icon>
+  </lord-icon>
+
   <script>
     const canvas = document.getElementById('tetrisCanvas');
     const ctx = canvas.getContext('2d');
     const blockSize = 30;
     const rows = 20;
     const columns = 10;
-    let board = Array.from({ length: rows }, () => Array(columns).fill(0));
-    let currentPiece = generatePiece();
-    let score = 0;
-    let gameOver = false;
-    let gameSpeed = 500; // Initial game speed in milliseconds
-    let lastMoveDown = Date.now();
-    let isPaused = false;
+    const initialGameSpeed = 500;
+    const pieceQueue = [];
+    const pieceColors = ['cyan', 'blue', 'orange', 'yellow', 'red', 'green', 'purple'];
+    let board, currentPiece, nextPiece, score, gameOver, gameSpeed, lastMoveDown, isPaused;
+
+    function initialize() {
+      board = Array.from({ length: rows }, () => Array(columns).fill(0));
+      score = 0;
+      gameOver = false;
+      gameSpeed = initialGameSpeed;
+      lastMoveDown = Date.now();
+      isPaused = false;
+      generateNewPiece();
+    }
+
+    function generateNewPiece() {
+      if (pieceQueue.length === 0) {
+        pieceColors.sort(() => Math.random() - 0.5);
+        pieceColors.forEach(color => pieceQueue.push({ color }));
+      }
+
+      const nextPieceInfo = pieceQueue.shift();
+      nextPiece = {
+        shape: getRandomPieceShape(),
+        color: nextPieceInfo.color,
+        x: Math.floor((columns - nextPieceInfo.shape[0].length) / 2),
+        y: 0,
+      };
+    }
+
+    function getRandomPieceShape() {
+      const pieces = [
+        [[1, 1, 1, 1]],          // I
+        [[1, 1, 1], [1]],        // J
+        [[1, 1, 1], [0, 0, 1]],  // L
+        [[1, 1, 1], [1, 0]],     // O
+        [[1, 1], [1, 1]],        // S
+        [[0, 1, 1], [1, 1]],     // T
+        [[1, 1, 0], [0, 1, 1]]   // Z
+      ];
+      return pieces[Math.floor(Math.random() * pieces.length)];
+    }
 
     function drawSquare(x, y, color) {
       ctx.fillStyle = color;
@@ -82,35 +133,20 @@
       });
     }
 
+    function drawNextPiecePreview() {
+      // Your code to draw the next piece preview (optional)
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBoard();
       drawPiece();
+      drawNextPiecePreview();
       document.getElementById('score').textContent = `Score: ${score}`;
 
       if (gameOver) {
         document.getElementById('game-over').style.display = 'block';
       }
-    }
-
-    function generatePiece() {
-      const pieces = [
-        { shape: [[1, 1, 1, 1]], color: 'cyan' },
-        { shape: [[1, 1, 1], [1]], color: 'blue' },
-        { shape: [[1, 1, 1], [0, 0, 1]], color: 'orange' },
-        { shape: [[1, 1, 1], [1, 0]], color: 'yellow' },
-        { shape: [[1, 1], [1, 1]], color: 'red' },
-        { shape: [[1, 1, 0], [0, 1, 1]], color: 'green' },
-        { shape: [[0, 1, 1], [1, 1]], color: 'purple' },
-      ];
-      const randomIndex = Math.floor(Math.random() * pieces.length);
-      const piece = pieces[randomIndex];
-      return {
-        shape: piece.shape,
-        color: piece.color,
-        x: Math.floor((columns - piece.shape[0].length) / 2),
-        y: 0,
-      };
     }
 
     function moveDown() {
@@ -119,60 +155,12 @@
       } else if (!gameOver) {
         mergePiece();
         clearLines();
-        currentPiece = generatePiece();
+        currentPiece = nextPiece;
+        generateNewPiece();
         if (!isValidMove(0, 0)) {
           gameOver = true;
+          handleGameOver();
         }
-      }
-    }
-
-    function moveLeft() {
-      if (!gameOver && isValidMove(-1, 0)) {
-        currentPiece.x--;
-      }
-    }
-
-    function moveRight() {
-      if (!gameOver && isValidMove(1, 0)) {
-        currentPiece.x++;
-      }
-    }
-
-    function rotate() {
-      const rotatedPiece = {
-        shape: currentPiece.shape.map((_, i) => currentPiece.shape.map(row => row[i])).reverse(),
-        color: currentPiece.color,
-        x: currentPiece.x,
-        y: currentPiece.y,
-      };
-
-      if (!gameOver && isValidMove(0, 0, rotatedPiece)) {
-        currentPiece.shape = rotatedPiece.shape;
-      }
-    }
-
-    function rotateClockwise() {
-      const rotatedPiece = {
-        shape: currentPiece.shape[0].map((_, i) => currentPiece.shape.map(row => row[i])).reverse(),
-        color: currentPiece.color,
-        x: currentPiece.x,
-        y: currentPiece.y,
-      };
-
-      if (!gameOver && isValidMove(0, 0, rotatedPiece)) {
-        currentPiece.shape = rotatedPiece.shape;
-      }
-    }
-
-    function moveDrop() {
-      while (isValidMove(0, 1)) {
-        moveDown();
-      }
-    }
-
-    function moveUp() {
-      if (!gameOver && isValidMove(0, -1)) {
-        currentPiece.y--;
       }
     }
 
@@ -211,7 +199,6 @@
       }
       if (linesCleared > 0) {
         score += linesCleared * 100;
-        // Increase game speed after clearing lines
         gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
       }
     }
@@ -230,31 +217,33 @@
       requestAnimationFrame(gameLoop);
     }
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') {
-        moveLeft();
-      } else if (event.key === 'ArrowRight') {
-        moveRight();
-      } else if (event.key === 'ArrowDown') {
-        moveDown();
-      } else if (event.key === 'ArrowUp') {
-        rotate();
-      } else if (event.key === 'x') {
-        // "X" key for toggling pause/resume
-        isPaused = !isPaused;
-      } else if (event.key === 'c') {
-        // "C" key for changing the position of the piece
-        moveUp();
-      } else if (event.key === ' ') {
-        moveDrop();
-      } else if (event.key === 'z') {
-        // "Z" key for clockwise rotation
-        rotateClockwise();
-      }
-    });
+    function handleGameOver() {
+      // Your code to handle game over (e.g., stop game loop, display score, etc.)
+    }
 
+    function restartGame() {
+      initialize();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function startPauseGame() {
+      isPaused = !isPaused;
+      document.getElementById('start-pause-btn').textContent = isPaused ? 'Resume' : 'Pause';
+      if (!gameOver) {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    function handleSoundToggleClick() {
+      // Your code to toggle sound effects (optional)
+    }
+
+    document.getElementById('start-pause-btn').addEventListener('click', startPauseGame);
+    document.getElementById('restart-btn').addEventListener('click', restartGame);
+    document.getElementById('sound-toggle-btn').addEventListener('click', handleSoundToggleClick);
+
+    initialize();
     gameLoop();
   </script>
-   <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
-</body>
-</html>
+
+
