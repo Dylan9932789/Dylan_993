@@ -657,9 +657,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') { // Нажатие клавиши Escape для переключения паузы
     isPaused ? resumeGame() : pauseGame();
   }
-});
-
-// Вызываем основной игровой цикл для начала игры
+}
 gameLoop();
 
 
