@@ -618,17 +618,4 @@ function clearLines() {
     updateHighScore();
   }
 }
-
-// Добавляем переменную для отслеживания состояния паузы
-let isPaused = false;
-
-// Функция для установки флага паузы
-function pauseGame() {
-  isPaused = true;
-}
-
-// Функция для снятия флага паузы
-function resumeGame() {
-  isPaused = false;
-}
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
