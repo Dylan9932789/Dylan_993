@@ -631,34 +631,4 @@ function pauseGame() {
 function resumeGame() {
   isPaused = false;
 }
-
-// Обновляем функцию обновления игры для учета состояния паузы
-function update() {
-  const currentTime = Date.now();
-  // Проверяем, не находится ли игра на паузе
-  if (!isPaused && currentTime - lastMoveDown > gameSpeed) {
-    moveDown();
-    lastMoveDown = currentTime;
-  }
-}
-
-// Обновляем основной игровой цикл для учета состояния паузы
-function gameLoop() {
-  if (!gameOver) {
-    update();
-    draw();
-    drawNextPiece();
-    requestAnimationFrame(gameLoop);
-  }
-}
-
-// Добавляем обработчики событий для клавиш управления паузой
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') { // Нажатие клавиши Escape для переключения паузы
-    isPaused ? resumeGame() : pauseGame();
-  }
-}
-gameLoop();
-
-
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
