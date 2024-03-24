@@ -223,7 +223,8 @@
         shape: piece.shape,
         color: piece.color,
         x: Math.floor((columns - piece.shape[0].length) / 2),
-        y: 0,
+        y: 0
+      if (!gameOver && isValidMove(-1, 0)) {,
       };
     }
 
@@ -242,7 +243,6 @@
     }
 
     function moveLeft() {
-      if (!gameOver && isValidMove(-1, 0)) {
         currentPiece.x--;
       }
     }
@@ -599,5 +599,66 @@ function animateLineClear(row) {
   }
 }
 
+// Update clearLines function to animate line clear
+function clearLines() {
+  let linesCleared = 0;
+  for (let row = rows - 1; row >= 0; row--) {
+    if (board[row].every(cell => cell !== 0)) {
+      animateLineClear(row); // Animate line clear
+      board.splice(row, 1);
+      board.unshift(Array(columns).fill(0));
+      linesCleared++;
+    }
+  }
+  if (linesCleared > 0) {
+    score += linesCleared * 100 * level;
+    level = Math.floor(score / 1000) + 1;
+    gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
+    playLineClearSound();
+    updateHighScore();
+  }
+}
+
+// Add game over animation
+function gameOverAnimation() {
+  const gameOverText = "Game Over!";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = "30px Arial";
+  ctx.fillStyle = "red";
+  ctx.textAlign = "center";
+
+  let currentIndex = 0;
+  function animate() {
+    if (currentIndex < gameOverText.length) {
+      ctx.fillText(gameOverText[currentIndex], canvas.width / 2, canvas.height / 2);
+      currentIndex++;
+      requestAnimationFrame(animate);
+    } else {
+      restartButton.style.display = 'block';
+    }
+  }
+
+  animate();
+}
+
+// Update draw function to call drawNextPiece and gameOverAnimation
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBoard();
+  drawPiece(currentPiece, ctx);
+  drawNextPiece();
+  scoreElement.textContent = `Score: ${score}`;
+  levelElement.textContent = `Level: ${level}`;
+
+  if (gameOver) {
+    gameOverAnimation();
+  } else {
+    restartButton.style.display = 'none';
+  }
+}
+
+  </script>
 
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
+
