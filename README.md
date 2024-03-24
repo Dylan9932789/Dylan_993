@@ -661,44 +661,6 @@ document.addEventListener('keydown', (event) => {
 
 // Вызываем основной игровой цикл для начала игры
 gameLoop();
-// Функция сохранения состояния игры в Local Storage
-function saveGameState() {
-  const gameState = {
-    board: board,
-    currentPiece: currentPiece,
-    nextPiece: nextPiece,
-    score: score,
-    level: level,
-    gameOver: gameOver,
-    gameSpeed: gameSpeed,
-    isPaused: isPaused
-  };
-  localStorage.setItem('tetrisGameState', JSON.stringify(gameState));
-}
 
-// Функция загрузки состояния игры из Local Storage
-function loadGameState() {
-  const savedState = localStorage.getItem('tetrisGameState');
-  if (savedState) {
-    const gameState = JSON.parse(savedState);
-    board = gameState.board;
-    currentPiece = gameState.currentPiece;
-    nextPiece = gameState.nextPiece;
-    score = gameState.score;
-    level = gameState.level;
-    gameOver = gameState.gameOver;
-    gameSpeed = gameState.gameSpeed;
-    isPaused = gameState.isPaused;
-  }
-}
-
-// Вызываем функцию загрузки состояния при загрузке страницы
-window.addEventListener('load', loadGameState);
-
-// Вызываем функцию сохранения состояния при закрытии страницы
-window.addEventListener('beforeunload', saveGameState);
-
-
-  </script>
 
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
