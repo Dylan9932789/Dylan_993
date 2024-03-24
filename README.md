@@ -619,6 +619,84 @@ function clearLines() {
   }
 }
 
+// Добавляем переменную для отслеживания состояния паузы
+let isPaused = false;
+
+// Функция для установки флага паузы
+function pauseGame() {
+  isPaused = true;
+}
+
+// Функция для снятия флага паузы
+function resumeGame() {
+  isPaused = false;
+}
+
+// Обновляем функцию обновления игры для учета состояния паузы
+function update() {
+  const currentTime = Date.now();
+  // Проверяем, не находится ли игра на паузе
+  if (!isPaused && currentTime - lastMoveDown > gameSpeed) {
+    moveDown();
+    lastMoveDown = currentTime;
+  }
+}
+
+// Обновляем основной игровой цикл для учета состояния паузы
+function gameLoop() {
+  if (!gameOver) {
+    update();
+    draw();
+    drawNextPiece();
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+// Добавляем обработчики событий для клавиш управления паузой
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') { // Нажатие клавиши Escape для переключения паузы
+    isPaused ? resumeGame() : pauseGame();
+  }
+});
+
+// Вызываем основной игровой цикл для начала игры
+gameLoop();
+// Функция сохранения состояния игры в Local Storage
+function saveGameState() {
+  const gameState = {
+    board: board,
+    currentPiece: currentPiece,
+    nextPiece: nextPiece,
+    score: score,
+    level: level,
+    gameOver: gameOver,
+    gameSpeed: gameSpeed,
+    isPaused: isPaused
+  };
+  localStorage.setItem('tetrisGameState', JSON.stringify(gameState));
+}
+
+// Функция загрузки состояния игры из Local Storage
+function loadGameState() {
+  const savedState = localStorage.getItem('tetrisGameState');
+  if (savedState) {
+    const gameState = JSON.parse(savedState);
+    board = gameState.board;
+    currentPiece = gameState.currentPiece;
+    nextPiece = gameState.nextPiece;
+    score = gameState.score;
+    level = gameState.level;
+    gameOver = gameState.gameOver;
+    gameSpeed = gameState.gameSpeed;
+    isPaused = gameState.isPaused;
+  }
+}
+
+// Вызываем функцию загрузки состояния при загрузке страницы
+window.addEventListener('load', loadGameState);
+
+// Вызываем функцию сохранения состояния при закрытии страницы
+window.addEventListener('beforeunload', saveGameState);
 
 
   </script>
