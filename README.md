@@ -599,23 +599,5 @@ function animateLineClear(row) {
   }
 }
 
-// Update clearLines function to animate line clear
-function clearLines() {
-  let linesCleared = 0;
-  for (let row = rows - 1; row >= 0; row--) {
-    if (board[row].every(cell => cell !== 0)) {
-      animateLineClear(row); // Animate line clear
-      board.splice(row, 1);
-      board.unshift(Array(columns).fill(0));
-      linesCleared++;
-    }
-  }
-  if (linesCleared > 0) {
-    score += linesCleared * 100 * level;
-    level = Math.floor(score / 1000) + 1;
-    gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
-    playLineClearSound();
-    updateHighScore();
-  }
-}
+
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
