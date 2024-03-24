@@ -348,6 +348,162 @@
     }
 
     gameLoop();
+    function update() {
+  const currentTime = Date.now();
+  if (!isPaused && currentTime - lastMoveDown > gameSpeed) {
+    moveDown();
+    lastMoveDown = currentTime;
+  }
+}
+
+function pauseGame() {
+  isPaused = true;
+}
+
+function resumeGame() {
+  isPaused = false;
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') { // Press Escape key to toggle pause/resume
+    isPaused ? resumeGame() : pauseGame();
+  }
+});
+
+function gameLoop() {
+  update();
+  draw();
+  drawNextPiece(); // Add this to update the next piece display
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+// Update handleTouchMove function to handle continuous touch movement
+function handleTouchMove(event) {
+  event.preventDefault();
+  // Calculate the distance moved
+  const touchX = event.touches[0].clientX;
+  const touchY = event.touches[0].clientY;
+  const deltaX = touchX - touchStartX;
+  const deltaY = touchY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // Horizontal movement
+    if (deltaX > 10) { // Adjust threshold as needed for smoother controls
+      moveRight();
+      touchStartX = touchX;
+    } else if (deltaX < -10) {
+      moveLeft();
+      touchStartX = touchX;
+    }
+  } else {
+    // Vertical movement
+    if (deltaY > 10) { // Adjust threshold as needed for smoother controls
+      moveDown();
+      touchStartY = touchY;
+    } else if (deltaY < -10) {
+      rotate();
+      touchStartY = touchY;
+    }
+  }
+}
+
+// Add game over detection
+function isGameOver() {
+  // Check if the current piece can be placed at the top of the board
+  return !isValidMove(0, 0);
+}
+
+// Update moveDown function to check for game over
+function moveDown() {
+  if (!gameOver && isValidMove(0, 1)) {
+    currentPiece.y++;
+  } else if (!gameOver) {
+    mergePiece();
+    clearLines();
+    currentPiece = nextPiece;
+    nextPiece = generatePiece();
+    if (isGameOver()) {
+      gameOver = true;
+    }
+  }
+}
+
+// Update draw function to display game over message
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBoard();
+  drawPiece(currentPiece, ctx);
+  document.getElementById('score').textContent = `Score: ${score}`;
+  document.getElementById('level').textContent = `Level: ${level}`;
+
+  if (gameOver) {
+    document.getElementById('game-over').style.display = 'block';
+  }
+}
+
+// Update gameLoop function to stop when game over
+function gameLoop() {
+  if (!gameOver) {
+    update();
+    draw();
+    drawNextPiece();
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+// Call gameLoop to start the game
+gameLoop();
+// Add scoring and leveling up
+function clearLines() {
+  let linesCleared = 0;
+  for (let row = rows - 1; row >= 0; row--) {
+    if (board[row].every(cell => cell !== 0)) {
+      board.splice(row, 1);
+      board.unshift(Array(columns).fill(0));
+      linesCleared++;
+    }
+  }
+  if (linesCleared > 0) {
+    score += linesCleared * 100 * level; // Increase score based on level
+    level = Math.floor(score / 1000) + 1; // Update level
+    // Increase game speed after clearing lines
+    gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
+  }
+}
+
+// Update draw function to display game over message with final score
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBoard();
+  drawPiece(currentPiece, ctx);
+  document.getElementById('score').textContent = `Score: ${score}`;
+  document.getElementById('level').textContent = `Level: ${level}`;
+
+  if (gameOver) {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "center";
+    ctx.fillText("Game Over!", canvas.width / 2, canvas.height / 2 - 30);
+    ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
+  }
+}
+
+// Update gameLoop function to stop when game over
+function gameLoop() {
+  if (!gameOver) {
+    update();
+    draw();
+    drawNextPiece();
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+// Call gameLoop to start the game
+gameLoop();
+
   </script>
 
  <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
