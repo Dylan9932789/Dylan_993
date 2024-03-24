@@ -503,6 +503,83 @@ function gameLoop() {
 
 // Call gameLoop to start the game
 gameLoop();
+// Add keyboard controls for pause/resume
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') { // Press Escape key to toggle pause/resume
+    isPaused ? resumeGame() : pauseGame();
+  }
+});
+
+// Add responsive design for canvas
+window.addEventListener('resize', resizeCanvas);
+
+function resizeCanvas() {
+  const maxWidth = window.innerWidth - 20; // Adjust margin
+  const maxHeight = window.innerHeight - 20; // Adjust margin
+  const idealWidth = columns * blockSize;
+  const idealHeight = rows * blockSize;
+  let scale = 1;
+  if (idealWidth > maxWidth || idealHeight > maxHeight) {
+    scale = Math.min(maxWidth / idealWidth, maxHeight / idealHeight);
+  }
+  canvas.width = idealWidth * scale;
+  canvas.height = idealHeight * scale;
+  canvas.style.width = `${canvas.width}px`;
+  canvas.style.height = `${canvas.height}px`;
+}
+
+// Add sound effects
+const lineClearSound = new Audio('line_clear_sound.mp3'); // Replace with actual sound file
+const gameOverSound = new Audio('game_over_sound.mp3'); // Replace with actual sound file
+
+function playLineClearSound() {
+  lineClearSound.play();
+}
+
+function playGameOverSound() {
+  gameOverSound.play();
+}
+
+// Update clearLines function to play sound effects
+function clearLines() {
+  let linesCleared = 0;
+  for (let row = rows - 1; row >= 0; row--) {
+    if (board[row].every(cell => cell !== 0)) {
+      board.splice(row, 1);
+      board.unshift(Array(columns).fill(0));
+      linesCleared++;
+    }
+  }
+  if (linesCleared > 0) {
+    score += linesCleared * 100 * level; // Increase score based on level
+    level = Math.floor(score / 1000) + 1; // Update level
+    playLineClearSound(); // Play sound effect
+    // Increase game speed after clearing lines
+    gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
+  }
+}
+
+// Update moveDown function to play sound effect on game over
+function moveDown() {
+  if (!gameOver && isValidMove(0, 1)) {
+    currentPiece.y++;
+  } else if (!gameOver) {
+    mergePiece();
+    clearLines();
+    currentPiece = nextPiece;
+    nextPiece = generatePiece();
+    if (isGameOver()) {
+      gameOver = true;
+      playGameOverSound(); // Play sound effect
+    }
+  }
+}
+
+// Call resizeCanvas to initialize canvas size
+resizeCanvas();
+
+// Call gameLoop to start the game
+gameLoop();
 
   </script>
 
