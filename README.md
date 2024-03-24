@@ -619,44 +619,7 @@ function clearLines() {
   }
 }
 
-// Add game over animation
-function gameOverAnimation() {
-  const gameOverText = "Game Over!";
-  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.font = "30px Arial";
-  ctx.fillStyle = "red";
-  ctx.textAlign = "center";
 
-  let currentIndex = 0;
-  function animate() {
-    if (currentIndex < gameOverText.length) {
-      ctx.fillText(gameOverText[currentIndex], canvas.width / 2, canvas.height / 2);
-      currentIndex++;
-      requestAnimationFrame(animate);
-    } else {
-      restartButton.style.display = 'block';
-    }
-  }
-
-  animate();
-}
-
-// Update draw function to call drawNextPiece and gameOverAnimation
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBoard();
-  drawPiece(currentPiece, ctx);
-  drawNextPiece();
-  scoreElement.textContent = `Score: ${score}`;
-  levelElement.textContent = `Level: ${level}`;
-
-  if (gameOver) {
-    gameOverAnimation();
-  } else {
-    restartButton.style.display = 'none';
-  }
-}
 
   </script>
 
