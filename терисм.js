@@ -191,13 +191,13 @@ function moveDown() {
     clearLines();
     currentPiece = nextPiece;
     nextPiece = generatePiece();
+    drawNextPiece(); // Добавим вызов функции drawNextPiece()
     if (!isValidMove(0, 0)) {
       gameOver = true;
       displayGameOver();
     }
   }
 }
-
 function rotate() {
   const rotatedPiece = {
     shape: currentPiece.shape.map((_, i) => currentPiece.shape.map(row => row[i])).reverse(),
