@@ -305,3 +305,4 @@ function updateGame() {
     displayGameOver();
   }
 }
+gameLoop()
