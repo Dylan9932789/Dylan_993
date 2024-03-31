@@ -254,6 +254,7 @@ function clearLines() {
     score += linesCleared * 100;
     level = Math.floor(score / 1000) + 1;
     gameSpeed = Math.max(100, gameSpeed - linesCleared * 10);
+    clearLines(); // Рекурсивный вызов для удаления всех заполненных рядов
   }
 }
 
