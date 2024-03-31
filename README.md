@@ -49,7 +49,15 @@
   <canvas id="next-piece-canvas" width="100" height="100"></canvas>
   <button id="sound-button">Toggle Sound 🔊</button>
   <button id="reset-button">Reset Game 🔄</button>
-  <button id="pause-resume-button">Пауза</button>                                      
+  <button id="pause-resume-button">Пауза</button>
+<div id="touch-controls">
+  <button id="left-button">Left</button>
+  <button id="right-button">Right</button>
+  <button id="down-button">Down</button>
+  <button id="rotate-button">Rotate</button>
+  <button id="drop-button">Drop</button>
+</div>
+
   <script src="tetris.js"></script>
 <script>
 const canvas = document.getElementById('tetrisCanvas');
@@ -153,6 +161,20 @@ function updateScoreAndLevel() {
   document.getElementById('score').textContent = `Score: ${score}`;
   document.getElementById('level').textContent = `Level: ${level}`;
 }
+const leftButton = document.getElementById('left-button');
+leftButton.addEventListener('click', moveLeft);
+
+const rightButton = document.getElementById('right-button');
+rightButton.addEventListener('click', moveRight);
+
+const downButton = document.getElementById('down-button');
+downButton.addEventListener('click', moveDown);
+
+const rotateButton = document.getElementById('rotate-button');
+rotateButton.addEventListener('click', rotate);
+
+const dropButton = document.getElementById('drop-button');
+dropButton.addEventListener('click', moveDrop);
 
 function displayGameOver() {
   if (gameOver) {
