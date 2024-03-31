@@ -3,6 +3,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tetris</title>
   <link rel="stylesheet" href="styles.css">
+   <style>
+   }
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+canvas {
+  border: 1px solid #000;
+}
+
+#score {
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+#level {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+#game-over {
+  display: none;
+  margin-top: 20px;
+  font-size: 30px;
+  color: red;
+  font-weight: bold;
+}
+
+#next-piece-canvas {
+  border: 1px solid #000;
+  margin-top: 20px;
+}
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+canvas {
+  border: 1px solid #000;
+}
+
+#score {
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+#level {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+#game-over {
+  display: none;
+  margin-top: 20px;
+  font-size: 30px;
+  color: red;
+  font-weight: bold;
+}
+
+#next-piece-canvas {
+  border: 1px solid #000;
+  margin-top: 20px;
+}
+
+   
+  </style>
 </head>
 <body>
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
@@ -14,8 +90,8 @@
   <button id="reset-button">Reset Game 🔄</button>
   <button id="pause-resume-button">Пауза</button>                                      
   <script src="tetris.js"></script>
-<p>&copy; 2024 Разработчик  Dylan933 Все права защищены.  г Вяземский | <span id="companyLink"></span></p>
-const canvas = document.getElementById('tetrisCanvas');
+   <script>
+   const canvas = document.getElementById('tetrisCanvas');
 const ctx = canvas.getContext('2d');
 const blockSize = 30;
 const rows = 20;
@@ -344,39 +420,7 @@ function pauseGame() {
 function resumeGame() {
   pauseResumeButton.textContent = 'Пауза';
   gameLoop(); // Запускаем игровой цикл снова
-}
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-}
 
-canvas {
-  border: 1px solid #000;
-}
+  </script>
 
-#score {
-  margin-top: 20px;
-  font-size: 20px;
-}
-
-#level {
-  margin-top: 10px;
-  font-size: 18px;
-}
-
-#game-over {
-  display: none;
-  margin-top: 20px;
-  font-size: 30px;
-  color: red;
-  font-weight: bold;
-}
-
-#next-piece-canvas {
-  border: 1px solid #000;
-  margin-top: 20px;
-}
+<p>&copy; 2024 Разработчик  Dylan933 Все права защищены.  г Вяземский | <span id="companyLink"></span></p>
