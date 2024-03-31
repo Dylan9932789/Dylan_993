@@ -51,8 +51,8 @@
   <button id="reset-button">Reset Game 🔄</button>
   <button id="pause-resume-button">Пауза</button>                                      
   <script src="tetris.js"></script>
-   <script>
-   const canvas = document.getElementById('tetrisCanvas');
+<script>
+const canvas = document.getElementById('tetrisCanvas');
 const ctx = canvas.getContext('2d');
 const blockSize = 30;
 const rows = 20;
@@ -381,6 +381,8 @@ function pauseGame() {
 function resumeGame() {
   pauseResumeButton.textContent = 'Пауза';
   gameLoop(); // Запускаем игровой цикл снова
+}
+
 
   </script>
 
