@@ -349,4 +349,4 @@
     gameLoop();
   </script>
 
- <p>&copy; 2024 Разработчик  Dylan933 Все права защищены. | <span id="companyLink"></span></p>
+ <p>&copy; 2024 Разработчик  Dylan933 Все права защищены.  г Вяземский | <span id="companyLink"></span></p>
