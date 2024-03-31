@@ -376,13 +376,10 @@ function togglePauseResume() {
 function pauseGame() {
   pauseResumeButton.textContent = 'Возобнавить';
 }
-
-// Функция для продолжения игры
 function resumeGame() {
   pauseResumeButton.textContent = 'Пауза';
-  gameLoop(); // Запускаем игровой цикл снова
+  gameLoop(); // Restart the game loop
 }
-
 
   </script>
 
