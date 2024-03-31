@@ -3,81 +3,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tetris</title>
   <link rel="stylesheet" href="styles.css">
-   <style>
-   }
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-}
+    <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+    }
 
-canvas {
-  border: 1px solid #000;
-}
+    canvas {
+      border: 1px solid #000;
+    }
 
-#score {
-  margin-top: 20px;
-  font-size: 20px;
-}
+    #score {
+      margin-top: 20px;
+      font-size: 20px;
+    }
 
-#level {
-  margin-top: 10px;
-  font-size: 18px;
-}
+    #level {
+      margin-top: 10px;
+      font-size: 18px;
+    }
 
-#game-over {
-  display: none;
-  margin-top: 20px;
-  font-size: 30px;
-  color: red;
-  font-weight: bold;
-}
+    #game-over {
+      display: none;
+      margin-top: 20px;
+      font-size: 30px;
+      color: red;
+      font-weight: bold;
+    }
 
-#next-piece-canvas {
-  border: 1px solid #000;
-  margin-top: 20px;
-}
-}
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-}
-
-canvas {
-  border: 1px solid #000;
-}
-
-#score {
-  margin-top: 20px;
-  font-size: 20px;
-}
-
-#level {
-  margin-top: 10px;
-  font-size: 18px;
-}
-
-#game-over {
-  display: none;
-  margin-top: 20px;
-  font-size: 30px;
-  color: red;
-  font-weight: bold;
-}
-
-#next-piece-canvas {
-  border: 1px solid #000;
-  margin-top: 20px;
-}
-
-   
+    #next-piece-canvas {
+      border: 1px solid #000;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
