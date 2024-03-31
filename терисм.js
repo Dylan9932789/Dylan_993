@@ -306,4 +306,27 @@ function updateGame() {
     displayGameOver();
   }
 }
-gameLoop()
+// Добавляем обработчик клика для кнопки паузы/продолжения
+const pauseResumeButton = document.getElementById('pause-resume-button');
+pauseResumeButton.addEventListener('click', togglePauseResume);
+
+function togglePauseResume() {
+  isPaused = !isPaused;
+  if (isPaused) {
+    pauseGame();
+  } else {
+    resumeGame();
+  }
+}
+
+// Функция для паузы игры
+function pauseGame() {
+  pauseResumeButton.textContent = 'Возобнавить';
+}
+
+// Функция для продолжения игры
+function resumeGame() {
+  pauseResumeButton.textContent = 'Пауза';
+  gameLoop(); // Запускаем игровой цикл снова
+}
+
