@@ -43,19 +43,19 @@
 </head>
 <body>
   <canvas id="tetrisCanvas" width="300" height="600"></canvas>
-  <div id="score">Score: 0</div>
-  <div id="level">Level: 1</div>
+  <div id="score">Счет: 0</div>
+  <div id="level">Уровень: 1</div>
   <div id="game-over">Game Over!</div>
   <canvas id="next-piece-canvas" width="100" height="100"></canvas>
-  <button id="sound-button">Toggle Sound 🔊</button>
-  <button id="reset-button">Reset Game 🔄</button>
+  <button id="sound-button">Звук 🔊</button>
+  <button id="reset-button">начеть заново 🔄</button>
   <button id="pause-resume-button">Пауза</button>
 <div id="touch-controls">
-  <button id="left-button">Left</button>
-  <button id="right-button">Right</button>
-  <button id="down-button">Down</button>
-  <button id="rotate-button">Rotate</button>
-  <button id="drop-button">Drop</button>
+  <button id="left-button">Лево</button>
+  <button id="right-button">Прво</button>
+  <button id="down-button">Вниз</button>
+  <button id="rotate-button">Вращать</button>
+  <button id="drop-button">Капля</button>
 </div>
 
   <script src="tetris.js"></script>
