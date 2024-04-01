@@ -53,9 +53,8 @@
 <div id="touch-controls">
   <button id="left-button">Лево</button>
   <button id="right-button">Прво</button>
-  <button id="down-button">Вниз</button>
   <button id="rotate-button">Вращать</button>
-  <button id="drop-button">Капля</button>
+  <button id="drop-button">Бысторе падение</button>
 </div>
 
   <script src="tetris.js"></script>
