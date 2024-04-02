@@ -5,7 +5,41 @@
   <title>Тетрис</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Your existing CSS styles */
+    body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+canvas {
+  border: 1px solid #000;
+}
+
+#score {
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+#level {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+#game-over {
+  display: none;
+  margin-top: 20px;
+  font-size: 30px;
+  color: red;
+  font-weight: bold;
+}
+
+#next-piece-canvas {
+  border: 1px solid #000;
+  margin-top: 20px;
+}
   </style>
 </head>
 <body>
