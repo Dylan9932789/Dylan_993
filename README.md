@@ -5,41 +5,139 @@
   <title>Тетрис</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial', sans-serif;
+  /* Стили для контейнера игрового поля */
+.game-container {
+    width: 300px; /* Размер игрового поля */
+    height: 600px;
+    border: 2px solid #000; /* Цвет границы */
+    background-color: #f0f0f0; /* Цвет фона */
+    position: relative;
+    overflow: hidden;
 }
 
-canvas {
-  border: 1px solid #000;
+/* Стили для блоков (тетромино) */
+.block {
+    width: 30px; /* Размер блока */
+    height: 30px;
+    position: absolute;
+    box-shadow: 0 0 0 1px #000; /* Теневой эффект */
 }
 
-#score {
-  margin-top: 20px;
-  font-size: 20px;
+/* Стили для отдельных типов блоков */
+.block.type1 {
+    background-color: #ff0000; /* Цвет блока 1 */
 }
 
-#level {
-  margin-top: 10px;
-  font-size: 18px;
+.block.type2 {
+    background-color: #00ff00; /* Цвет блока 2 */
 }
 
-#game-over {
-  display: none;
-  margin-top: 20px;
-  font-size: 30px;
-  color: red;
-  font-weight: bold;
+/* Стили для текста */
+.text {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #000;
+    text-align: center;
+    margin-top: 10px;
+    text-shadow: 1px 1px 1px #fff; /* Пиксельный эффект тени */
 }
 
-#next-piece-canvas {
-  border: 1px solid #000;
-  margin-top: 20px;
+/* Стили для кнопок */
+.button {
+    background-color: #ffcc00;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px; /* Закругление углов */
 }
+
+.button:hover {
+    background-color: #ffc700; /* Изменение цвета при наведении */
+    text-shadow: none; /* Удаление эффекта тени при наведении */
+}
+
+/* Дополнительные стили для кнопки старта */
+.start-button {
+    background-color: #00ff00; /* Зеленый цвет */
+}
+
+/* Дополнительные стили для кнопки паузы */
+.pause-button {
+    background-color: #ff0000; /* Красный цвет */
+}
+
+/* Дополнительные стили для кнопки перезапуска */
+.restart-button {
+    background-color: #0000ff; /* Синий цвет */
+}
+
+/* Стили для активной кнопки */
+.button:active {
+    transform: translateY(2px); /* Эффект нажатия */
+}
+
+/* Стили для блока при падении */
+.falling {
+    animation: fall 0.5s linear forwards; /* Анимация падения */
+}
+
+@keyframes fall {
+    from {
+        transform: translateY(-30px); /* Начальная позиция */
+    }
+    to {
+        transform: translateY(0); /* Конечная позиция */
+    }
+}
+
+/* Стили для блока при фиксации */
+.fixed {
+    border-color: #333; /* Цвет границы при фиксации */
+    box-shadow: 0 0 5px #000; /* Эффект тени при фиксации */
+}
+
+/* Стили для блока при наведении */
+.block:hover {
+    opacity: 0.7; /* Уменьшение прозрачности при наведении */
+}
+
+/* Стили для подсветки ячейки */
+.highlight {
+    background-color: rgba(255, 255, 255, 0.3); /* Подсветка с прозрачностью */
+}
+
+/* Стили для игрового поля */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* Деление на 10 колонок */
+    grid-template-rows: repeat(20, 1fr); /* Деление на 20 строк */
+    width: 300px; /* Размер игрового поля */
+    height: 600px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #000; /* Граница игрового поля */
+}
+
+/* Стили для отдельной ячейки игрового поля */
+.grid-cell {
+    border: 1px solid #000; /* Граница ячейки */
+    background-color: #fff; /* Цвет ячейки */
+}
+
+/* Стили для текста информации */
+.info-text {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+    text-align: center;
+}
+
   </style>
 </head>
 <body>
